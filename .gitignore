@@ -12,6 +12,7 @@ gulp/
 logback.xml
 *.iml
 workspace.xml
+generator.properties
 
 *.class
 
