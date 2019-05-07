@@ -9,8 +9,6 @@ import java.util.Map;
 
 /**
  * 数据库接口
- *
- * @author Mark sunlightcs@gmail.com
  */
 @Repository
 public interface GeneratorDao {

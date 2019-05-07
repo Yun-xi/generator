@@ -8,9 +8,10 @@
 
         SELECT
         <trim suffixOverrides=",">
-        #foreach($column in $columns)
+#foreach($column in $columns)
             ${column.columnName} AS ${column.attrname},
-        #end
+#end
+        </trim>
         FROM ${tableName}
         <where>
             app_id = #{appId}

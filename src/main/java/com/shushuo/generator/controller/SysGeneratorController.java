@@ -1,5 +1,6 @@
 package com.shushuo.generator.controller;
 
+import com.shushuo.generator.entity.CodeDto;
 import com.shushuo.generator.entity.TableQueryEntity;
 import com.shushuo.generator.service.SysGeneratorService;
 import com.shushuo.generator.utils.R;
@@ -15,8 +16,6 @@ import java.util.List;
 
 /**
  * 代码生成器
- *
- * @author Mark sunlightcs@gmail.com
  */
 @Api("自动生成")
 @RestController
@@ -41,8 +40,8 @@ public class SysGeneratorController {
 	 */
 	@ApiOperation("生成代码")
 	@PostMapping("/code")
-	public void code(String tableSchema, String tableName, HttpServletResponse response) throws IOException{
-		byte[] data = sysGeneratorService.generatorCode(tableSchema, tableName);
+	public void code(@RequestBody CodeDto codeDto, HttpServletResponse response) throws IOException{
+		byte[] data = sysGeneratorService.generatorCode(codeDto);
 		
 		response.reset();  
         response.setHeader("Content-Disposition", "attachment; filename=\"generator.zip\"");

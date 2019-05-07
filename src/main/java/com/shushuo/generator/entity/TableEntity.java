@@ -4,8 +4,6 @@ import java.util.List;
 
 /**
  * 表数据
- *
- * @author Mark sunlightcs@gmail.com
  */
 public class TableEntity {
 	//表的名称

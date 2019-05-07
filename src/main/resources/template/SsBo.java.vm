@@ -25,11 +25,13 @@ import java.util.Date;
 public class ${className}Bo extends BaseBean {
 
 #foreach ($column in $columns)
-
+#if($column.attrname != 'addTime')
 	/**
 	 * $column.comments
 	 */
 	private $column.attrType $column.attrname;
+
+#end
 #end
 
 }

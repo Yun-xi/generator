@@ -6,8 +6,6 @@ import java.util.Map;
 
 /**
  * 查询参数
- *
- * @author Mark sunlightcs@gmail.com
  */
 public class Query extends LinkedHashMap<String, Object> {
 	private static final long serialVersionUID = 1L;

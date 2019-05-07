@@ -1,6 +1,7 @@
 package com.shushuo.generator.service;
 
 import com.shushuo.generator.dao.GeneratorDao;
+import com.shushuo.generator.entity.CodeDto;
 import com.shushuo.generator.entity.TableQueryEntity;
 import com.shushuo.generator.utils.GenUtils;
 import org.apache.commons.io.IOUtils;
@@ -14,8 +15,6 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * 代码生成器
- *
- * @author Mark sunlightcs@gmail.com
  */
 @Service
 public class SysGeneratorService {
@@ -36,16 +35,21 @@ public class SysGeneratorService {
 		return generatorDao.queryColumns(tableSchema, tableName);
 	}
 
-	public byte[] generatorCode(String tableSchema, String tableName) {
+	public byte[] generatorCode(CodeDto codeDto) {
+		String tableSchema = codeDto.getTableSchema();
+		List<String> tableNames = codeDto.getTableNames();
+
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(outputStream);
 
-		//查询表信息
-		Map<String, String> table = queryTable(tableSchema, tableName);
-		//查询列信息
-		List<Map<String, String>> columns = queryColumns(tableSchema, tableName);
-		//生成代码
-		GenUtils.generatorCode(table, columns, zip);
+		for (String tableName : tableNames) {
+			//查询表信息
+			Map<String, String> table = queryTable(tableSchema, tableName);
+			//查询列信息
+			List<Map<String, String>> columns = queryColumns(tableSchema, tableName);
+			//生成代码
+			GenUtils.generatorCode(table, columns, zip);
+		}
 
 		IOUtils.closeQuietly(zip);
 		return outputStream.toByteArray();

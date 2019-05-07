@@ -2,8 +2,6 @@ package com.shushuo.generator.entity;
 
 /**
  * 列的属性
- *
- * @author Mark sunlightcs@gmail.com
  */
 public class ColumnEntity {
 	//列名

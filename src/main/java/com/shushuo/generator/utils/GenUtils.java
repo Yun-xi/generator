@@ -21,8 +21,6 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * 代码生成器   工具类
- *
- * @author Mark sunlightcs@gmail.com
  */
 public class GenUtils {
 
@@ -121,8 +119,11 @@ public class GenUtils {
 		map.put("email", config.getString("email"));
 		map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
         VelocityContext context = new VelocityContext(map);
-        
-        //获取模板列表
+
+        // 模块名称
+		String domainName = config.getString("domainName");
+
+		//获取模板列表
 		List<String> templates = getTemplates();
 		for(String template : templates){
 			//渲染模板
@@ -132,7 +133,7 @@ public class GenUtils {
 			
 			try {
 				//添加到zip
-				zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), config.getString("package"), config.getString("moduleName"))));
+				zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), config.getString("package"), config.getString("moduleName"), domainName)));
 				IOUtils.write(sw.toString(), zip, "UTF-8");
 				IOUtils.closeQuietly(sw);
 				zip.closeEntry();
@@ -174,58 +175,58 @@ public class GenUtils {
 	/**
 	 * 获取文件名
 	 */
-	public static String getFileName(String template, String className, String packageName, String moduleName) {
+	public static String getFileName(String template, String className, String packageName, String moduleName, String domainName ) {
 		String packagePath = "generator" + File.separator;
 		if (StringUtils.isNotBlank(packageName)) {
 			packagePath += packageName.replace(".", File.separator) + File.separator + moduleName + File.separator;
 		}
 
 		if (template.contains("SsBo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "bo" + File.separator + className + "Bo.java";
+			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "Bo.java";
 		}
 
 		if (template.contains("SsController.java.vm" )) {
-			return packagePath + "controller" + File.separator + className + "Controller.java";
+			return packagePath + "web" + File.separator + "controller" + File.separator + domainName + File.separator + className + "Controller" + ".java";
 		}
 
 		if (template.contains("SsDeleteBo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "bo" + File.separator + className + "DeleteBo.java";
+			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "DeleteBo.java";
 		}
 
 		if (template.contains("SsMapper.java.vm" )) {
-			return packagePath + "dao" + File.separator + "mapper" + File.separator + className + "Mapper.java";
+			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "mapper" + File.separator + domainName + File.separator + className + "Mapper.java";
 		}
 
 		if (template.contains("SsMapper.xml.vm" )) {
-			return packagePath + "dao" + File.separator + "mapper" + File.separator + className + "Mapper.xml";
+			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "mapper" + File.separator + domainName + File.separator + className + "Mapper.xml";
 		}
 
 		if (template.contains("SsQueryBo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "bo" + File.separator + className + "QueryBo.java";
+			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "QueryBo.java";
 		}
 
 		if (template.contains("SsQueryRequest.java.vm" )) {
-			return packagePath + "controller" + File.separator + "request" + File.separator + className + "QueryRequest.java";
+			return packagePath + "web" + File.separator + "request" + File.separator + domainName + File.separator + className + "QueryRequest.java";
 		}
 
 		if (template.contains("SsQueryVo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "vo" + File.separator + className + "QueryVo.java";
+			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "vo" + File.separator + domainName + File.separator + className + "QueryVo.java";
 		}
 
 		if (template.contains("SsRepository.java.vm" )) {
-			return packagePath + "dao" + File.separator + "repository" + File.separator + className + "Repository.java";
+			return packagePath + "dao" + File.separator + "jpa" + File.separator + "repository"  + File.separator + domainName + File.separator + className + "Repository.java";
 		}
 
 		if (template.contains("SsRequest.java.vm" )) {
-			return packagePath + "controller" + File.separator + "request" + File.separator + className + "Request.java";
+			return packagePath + "web" + File.separator + "request" + File.separator + domainName + File.separator + className + "Request.java";
 		}
 
 		if (template.contains("SsService.java.vm" )) {
-			return packagePath + "service" + File.separator + className + "Service.java";
+			return packagePath + "service" + File.separator + domainName + File.separator + className + "Service.java";
 		}
 
 		if (template.contains("SsServiceImpl.java.vm" )) {
-			return packagePath + "service" + File.separator + "impl" + File.separator + className + "ServiceImpl.java";
+			return packagePath + "service" + File.separator + domainName + File.separator + "impl" + File.separator + className + "ServiceImpl" + ".java";
 		}
 
 		return null;

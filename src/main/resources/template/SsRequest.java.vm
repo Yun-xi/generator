@@ -27,8 +27,11 @@ import java.util.Date;
 @ApiModel("添加、修改条件")
 public class ${className}Request extends BaseBean {
 
-    #foreach ($column in $columns)
-@ApiModelProperty(value = "$column.comments")
+#foreach ($column in $columns)
+#if($column.attrname != 'addTime' && $column.attrname != 'appId' && $column.attrname != 'userId')
+    @ApiModelProperty(value = "$column.comments")
     private $column.attrType $column.attrname;
-    #end
+
+#end
+#end
 }

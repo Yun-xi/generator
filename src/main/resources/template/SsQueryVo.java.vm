@@ -25,11 +25,11 @@ import java.util.Date;
 public class ${className}QueryVo extends BaseBean {
 
 #foreach ($column in $columns)
-
 	/**
 	 * $column.comments
 	 */
 	private $column.attrType $column.attrname;
+
 #end
 
 }

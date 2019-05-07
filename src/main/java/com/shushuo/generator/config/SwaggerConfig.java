@@ -14,9 +14,7 @@ import static com.google.common.base.Predicates.or;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 /**
- * @author xieyaqi
- * @mail 987159036@qq.com
- * @date 2019-05-06 17:05
+ * swagger2配置
  */
 @Configuration
 @EnableSwagger2
