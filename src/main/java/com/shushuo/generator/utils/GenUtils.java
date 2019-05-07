@@ -45,7 +45,7 @@ public class GenUtils {
 	 * 生成代码
 	 */
 	public static void generatorCode(Map<String, String> table,
-			List<Map<String, String>> columns, ZipOutputStream zip){
+			List<Map<String, String>> columns, ZipOutputStream zip, String domainName){
 		//配置信息
 		Configuration config = getConfig();
 		boolean hasBigDecimal = false;
@@ -92,7 +92,11 @@ public class GenUtils {
 		if(tableEntity.getPk() == null){
 			tableEntity.setPk(tableEntity.getColumns().get(0));
 		}
-		
+
+		// requestMapping
+		String requestMapping = tableToRequestMapping(table.get("tableName"), config.getString("tablePrefix"));
+
+
 		//设置velocity资源加载器
 		Properties prop = new Properties();  
 		prop.put("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");  
@@ -114,14 +118,12 @@ public class GenUtils {
 		map.put("mainPath", mainPath);
 		map.put("package", config.getString("package" ));
 		map.put("moduleName", config.getString("moduleName" ));
-		map.put("domainName", config.getString("domainName" ));
+		map.put("domainName", domainName);
 		map.put("author", config.getString("author"));
 		map.put("email", config.getString("email"));
 		map.put("datetime", DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
+		map.put("requestMapping", requestMapping);
         VelocityContext context = new VelocityContext(map);
-
-        // 模块名称
-		String domainName = config.getString("domainName");
 
 		//获取模板列表
 		List<String> templates = getTemplates();
@@ -159,6 +161,17 @@ public class GenUtils {
 			tableName = tableName.replace(tablePrefix, "");
 		}
 		return columnToJava(tableName);
+	}
+
+	/**
+	 * 表名转换成RequestMapping
+	 */
+	public static String tableToRequestMapping(String tableName, String tablePrefix) {
+		if(StringUtils.isNotBlank(tablePrefix)){
+			tableName = tableName.replace(tablePrefix, "");
+			tableName = tableName.replaceAll("_", "/");
+		}
+		return tableName;
 	}
 	
 	/**

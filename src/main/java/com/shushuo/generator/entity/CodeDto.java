@@ -19,6 +19,9 @@ public class CodeDto {
     @ApiModelProperty(value = "库名", example = "ceres")
     private String tableSchema;
 
+    @ApiModelProperty(value = "包名", example = "app")
+    private String domainName;
+
     @ApiModelProperty(value = "表名", example = "[ss_app,ss_app_service]")
     private List<String> tableNames;
 }

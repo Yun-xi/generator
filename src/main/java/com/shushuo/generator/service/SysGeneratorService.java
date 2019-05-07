@@ -38,6 +38,7 @@ public class SysGeneratorService {
 	public byte[] generatorCode(CodeDto codeDto) {
 		String tableSchema = codeDto.getTableSchema();
 		List<String> tableNames = codeDto.getTableNames();
+		String domainName = codeDto.getDomainName();
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(outputStream);
@@ -48,7 +49,7 @@ public class SysGeneratorService {
 			//查询列信息
 			List<Map<String, String>> columns = queryColumns(tableSchema, tableName);
 			//生成代码
-			GenUtils.generatorCode(table, columns, zip);
+			GenUtils.generatorCode(table, columns, zip, domainName);
 		}
 
 		IOUtils.closeQuietly(zip);

@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Api(tags = "")
 @RestController
-@RequestMapping(value = "/${pathName}")
+@RequestMapping(value = "/${requestMapping}")
 public class ${className}Controller extends BaseController {
 
     @Autowired
