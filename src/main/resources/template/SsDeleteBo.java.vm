@@ -1,0 +1,31 @@
+package ${package}.${moduleName}.dao.mybatis.bo.${domainName};
+
+import ${package}.${moduleName}.common.base.BaseBean;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ${className}DeleteBo extends BaseBean {
+
+    /**
+     * 编号
+     */
+    private ${pk.attrType} id;
+
+    /**
+     * 商户编号
+     */
+    private Integer appId;
+}

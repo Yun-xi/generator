@@ -1,0 +1,152 @@
+package ${package}.${moduleName}.service.${domainName}.impl;
+
+import ${package}.${moduleName}.common.base.EntitySupport;
+import ${package}.${moduleName}.common.exception.SsException;
+import ${package}.${moduleName}.common.page.PageBean;
+import ${package}.${moduleName}.common.page.PageQuery;
+import ${package}.${moduleName}.common.page.convert.PageBeanConvert;
+import ${package}.${moduleName}.common.statics.enums.common.ErrorEnum;
+import ${package}.${moduleName}.common.utils.CommonUtil;
+import ${package}.${moduleName}.dao.jpa.entity.${domainName}.${className}Entity;
+import ${package}.${moduleName}.dao.jpa.repository.${domainName}.${className}Repository;
+import ${package}.${moduleName}.dao.mybatis.bo.${domainName}.${className}DeleteBo;
+import ${package}.${moduleName}.dao.mybatis.bo.${domainName}.${className}Bo;
+import ${package}.${moduleName}.dao.mybatis.bo.${domainName}.${className}QueryBo;
+import ${package}.${moduleName}.dao.mybatis.mapper.${domainName}.${className}Mapper;
+import ${package}.${moduleName}.dao.mybatis.vo.${domainName}.*;
+import ${package}.${moduleName}.service.${domainName}.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Slf4j
+@Service
+public class ${className}ServiceImpl implements ${className}Service {
+
+    @Autowired
+    private ${className}Repository ${classname}Repository;
+    @Autowired
+    private ${className}Mapper ${classname}Mapper;
+
+
+    /**
+     * 新建
+     * @param ${classname}Bo 新建入参
+     * @return 实体
+     * @throws SsException
+     */
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    public ${className}Entity save(${className}Bo ${classname}Bo) throws SsException {
+
+        ${className}Entity ${classname}Entity = ${classname}Bo.toBean(${className}Entity.class);
+        ${classname}Entity.setId(null);
+
+        return ${classname}Repository.save(${classname}Entity);
+    }
+
+    /**
+     * 修改
+     * @param ${classname}Bo 修改入参
+     * @return 实体
+     * @throws SsException
+     */
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    public ${className}Entity modify(${className}Bo ${classname}Bo) throws SsException {
+        ${pk.attrType} id =  ${classname}Bo.getId();
+        Integer appId =  ${classname}Bo.getAppId();
+
+        ${className}Entity before${className}Entity = this.findByIdAndAppId(id, appId);
+        ${className}Entity after${className}Entity = ${classname}Bo.toBean(${className}Entity.class);
+
+        after${className}Entity = EntitySupport.merge(before${className}Entity, after${className}Entity);
+
+        return ${classname}Repository.save(after${className}Entity);
+    }
+
+    /**
+     * 删除
+     * @param ${classname}DeleteBo 删除条件入参
+     * @throws SsException
+     */
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    public void delete(${className}DeleteBo ${classname}DeleteBo) throws SsException {
+        ${pk.attrType} id = ${classname}DeleteBo.getId();
+        Integer appId = ${classname}DeleteBo.getAppId();
+        ${className}Entity ${classname}Entity = this.findByIdAndAppId(id, appId);
+
+        ${classname}Repository.delete(${classname}Entity);
+    }
+
+    /**
+     * 列表查询
+     * @param pageQuery 分页查询条件
+     * @return 分页查询结果
+     */
+    @Override
+    public PageBean<${className}QueryVo> list(PageQuery<${className}QueryBo> pageQuery) {
+        ${className}QueryBo ${classname}QueryBo = pageQuery.getConditions();
+
+        List<${className}QueryVo> ${classname}QueryVos = ${classname}Mapper.list(${classname}QueryBo);
+        PageBean<${className}QueryVo> convert = PageBeanConvert.convert(${classname}QueryVos);
+
+        return convert;
+    }
+
+    /**
+     * 单个查询
+     * @param id 主键编号
+     * @return 实体
+     */
+    @Override
+    public ${className}Entity get(${pk.attrType} id) {
+        ${className}Entity ${classname}Entity = ${classname}Repository.findOne(id);
+        return ${classname}Entity;
+    }
+
+    /**
+     * 单个查询
+     * @param id 主键编号
+     * @return 实体
+     */
+    @Override
+    public ${className}Entity load(${pk.attrType} id) throws SsException {
+        ${className}Entity ${classname}Entity = this.get(id);
+        if(CommonUtil.isEmpty(${classname}Entity)){
+            throw new SsException(ErrorEnum.DATA_NOT_FOUND, "该编号的数据不存在: id = " + id);
+        }
+
+        return ${classname}Entity;
+    }
+
+    /**
+     * 根据主键和商户编号查询
+     * @param id 主键
+     * @param appId 商户编号
+     * @return 实体
+     * @throws SsException
+     */
+    private ${className}Entity findByIdAndAppId(${pk.attrType} id, Integer appId) throws SsException {
+        ${className}Entity ${classname}Entity = ${classname}Repository.findByIdAndAppId(id, appId);
+        if(CommonUtil.isEmpty(${classname}Entity)){
+            throw new SsException(ErrorEnum.DATA_NOT_FOUND, "该编号的数据不存在: id = " + id);
+        }
+
+        return ${classname}Entity;
+    }
+}

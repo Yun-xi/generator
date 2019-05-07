@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #MySQL配置
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.1.183:3306/ceres?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123456
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  resources:
+    static-locations: classpath:/static/,classpath:/views/
+
+
+mybatis:
+  mapperLocations: classpath:mapper/**/*.xml
+
+
+pagehelper:
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+swagger:
+  enabled: true

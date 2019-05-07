@@ -1,0 +1,104 @@
+package ${package}.${moduleName}.web.controller.${domainName};
+
+import ${package}.${moduleName}.common.exception.SsException;
+import ${package}.${moduleName}.common.page.PageBean;
+import ${package}.${moduleName}.common.page.PageQuery;
+import ${package}.${moduleName}.common.statics.constants.SsConstant;
+import ${package}.${moduleName}.dao.mybatis.bo.${domainName}.*;
+import ${package}.${moduleName}.dao.mybatis.vo.${domainName}.${className}QueryVo;
+import ${package}.${moduleName}.service.support.annotation.Log;
+import ${package}.${moduleName}.service.${domainName}.${className}Service;
+import ${package}.${moduleName}.web.controller.BaseController;
+import ${package}.${moduleName}.web.request.${domainName}.${className}QueryRequest;
+import ${package}.${moduleName}.web.request.${domainName}.${className}Request;
+import ${package}.${moduleName}.web.response.BaseResp;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Api(tags = "")
+@RestController
+@RequestMapping(value = "/${pathName}")
+public class ${className}Controller extends BaseController {
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    @Log("列表")
+    @ApiOperation(value = "列表")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public ResponseEntity<BaseResp<PageBean<${className}QueryVo>>> list(
+            @RequestHeader(SsConstant.TOKEN_HEADER) String token,
+            @ModelAttribute ${className}QueryRequest ${classname}QueryRequest) throws SsException {
+
+        ${className}QueryBo ${classname}QueryBo = ${classname}QueryRequest.toBean(${className}QueryBo.class);
+
+        PageBean<${className}QueryVo> ${classname}QueryVoPageBean = ${classname}Service.list(
+                PageQuery.<${className}QueryBo>builder()
+                        .startIndex(${classname}QueryRequest.getStartIndex())
+                        .pageSize(${classname}QueryRequest.getPageSize())
+                        .conditions(${classname}QueryBo)
+                        .build()
+        );
+        return ResponseEntity.ok(
+                BaseResp.ok(${classname}QueryVoPageBean));
+    }
+
+    @Log("添加")
+    @ApiOperation(value = "添加")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ResponseEntity<BaseResp<String>> create(
+            @RequestHeader(SsConstant.TOKEN_HEADER) String token,
+            @RequestBody @Valid ${className}Request ${classname}Request
+    ) throws SsException {
+
+        ${className}Bo ${classname}Bo = ${classname}Request.toBean(${className}Bo.class);
+        ${classname}Bo.setAppId(getAppId(token));
+
+        ${classname}Service.save(${classname}Bo);
+
+        return ResponseEntity.ok(BaseResp.ok("添加成功"));
+    }
+
+    @Log("修改")
+    @ApiOperation(value = "修改")
+    @RequestMapping(value = "/modify", method = RequestMethod.POST)
+    public ResponseEntity<BaseResp<String>> modify(
+            @RequestHeader(SsConstant.TOKEN_HEADER) String token,
+            @RequestBody @Valid ${className}Request ${classname}Request
+    ) throws SsException {
+
+        ${className}Bo ${classname}Bo = ${classname}Request.toBean(${className}Bo.class);
+        ${classname}Bo.setAppId(getAppId(token));
+
+        ${classname}Service.modify(${classname}Bo);
+        return ResponseEntity.ok(BaseResp.ok("修改成功"));
+    }
+
+    @Log("删除")
+    @ApiOperation(value = "删除")
+    @RequestMapping(value = "/{${pk.attrname}}/delete", method = RequestMethod.POST)
+    public ResponseEntity<BaseResp<String>> delete(
+            @RequestHeader(SsConstant.TOKEN_HEADER) String token,
+            @PathVariable ${pk.attrType} id) throws SsException {
+
+        ${classname}Service.delete(${className}DeleteBo.builder()
+                .appId(getAppId(token))
+                .id(id)
+                .build());
+
+        return ResponseEntity.ok(BaseResp.ok("删除成功"));
+    }
+}

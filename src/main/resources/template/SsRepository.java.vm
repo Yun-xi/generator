@@ -1,0 +1,18 @@
+package ${package}.${moduleName}.dao.jpa.repository.${domainName};
+
+import ${package}.${moduleName}.dao.jpa.entity.${domainName}.${className}Entity;
+import ${package}.${moduleName}.dao.jpa.repository.BaseRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Repository
+public interface ${className}Repository extends BaseRepository<${className}Entity, ${pk.attrType}> {
+
+    ${className}Entity findByIdAndAppId(${pk.attrType} id, Integer appId);
+}

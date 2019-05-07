@@ -1,0 +1,19 @@
+package ${package}.${moduleName}.dao.mybatis.mapper.${domainName};
+
+import ${package}.${moduleName}.dao.mybatis.bo.${domainName}.${className}QueryBo;
+import ${package}.${moduleName}.dao.mybatis.vo.${domainName}.${className}QueryVo;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Repository
+public interface ${className}Mapper {
+    List<${className}QueryVo> list(${className}QueryBo ${classname}QueryBo);
+}

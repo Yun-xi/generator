@@ -1,0 +1,36 @@
+package ${package}.${moduleName}.web.request.${domainName};
+
+import ${package}.${moduleName}.web.request.BasePageRequest;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import java.util.Date;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel("查询条件")
+public class ${className}QueryRequest extends BasePageRequest {
+
+    @ApiModelProperty(value = "编号", example = "1")
+    private ${pk.attrType} id;
+
+    @ApiModelProperty(value = "新增时间", example = "2019-05-06 11:15:26")
+    private Date addTime;
+
+}

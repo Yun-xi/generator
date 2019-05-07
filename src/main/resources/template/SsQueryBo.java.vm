@@ -1,0 +1,37 @@
+package ${package}.${moduleName}.dao.mybatis.bo;
+
+import ${package}.${moduleName}.common.base.BaseBean;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+import java.util.Date;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ${className}QueryBo extends BaseBean{
+
+    /**
+     * 编号
+     */
+    private ${pk.attrType} id;
+
+    /**
+     * 新增时间
+     */
+    private Date addTime;
+
+}
