@@ -54,7 +54,7 @@ public class SwaggerConfig {
      */
     private Predicate<String> openPath() {
         return or(
-                regex("/sys/generator/.*")
+                regex("/sys/generator/code")
         );
     }
 

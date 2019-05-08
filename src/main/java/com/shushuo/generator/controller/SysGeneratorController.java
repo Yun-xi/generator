@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 代码生成器
  */
-@Api("自动生成")
+@Api(tags = "自动生成代码")
 @RestController
 @RequestMapping("/sys/generator")
 public class SysGeneratorController {
