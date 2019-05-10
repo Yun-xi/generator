@@ -40,14 +40,9 @@ public class SysGeneratorController {
 	 */
 	@ApiOperation("生成代码")
 	@PostMapping("/code")
-	public void code(@RequestBody CodeDto codeDto, HttpServletResponse response) throws IOException{
-		byte[] data = sysGeneratorService.generatorCode(codeDto);
-		
-		response.reset();  
-        response.setHeader("Content-Disposition", "attachment; filename=\"generator.zip\"");
-        response.addHeader("Content-Length", "" + data.length);  
-        response.setContentType("application/octet-stream; charset=UTF-8");  
-  
-        IOUtils.write(data, response.getOutputStream());  
+	public R code(@RequestBody CodeDto codeDto, HttpServletResponse response) throws IOException{
+		sysGeneratorService.generatorCode(codeDto);
+
+		return R.ok().put("data", "生成成功");
 	}
 }

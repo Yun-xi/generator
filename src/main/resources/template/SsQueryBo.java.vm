@@ -1,4 +1,4 @@
-package ${package}.${moduleName}.dao.mybatis.bo;
+package ${package}.${moduleName}.dao.mybatis.bo.${domainName};
 
 import ${package}.${moduleName}.common.base.BaseBean;
 import lombok.AllArgsConstructor;
@@ -24,14 +24,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class ${className}QueryBo extends BaseBean{
 
+#foreach ($column in $columns)
     /**
-     * 编号
+     * $column.comments
      */
-    private ${pk.attrType} id;
+    private $column.attrType $column.attrname;
 
-    /**
-     * 新增时间
-     */
-    private Date addTime;
+#end
 
 }

@@ -27,10 +27,10 @@ import java.util.Date;
 @ApiModel("查询条件")
 public class ${className}QueryRequest extends BasePageRequest {
 
-    @ApiModelProperty(value = "编号", example = "1")
-    private ${pk.attrType} id;
+#foreach ($column in $columns)
+    @ApiModelProperty(value = "$column.comments")
+    private $column.attrType $column.attrname;
 
-    @ApiModelProperty(value = "新增时间", example = "2019-05-06 11:15:26")
-    private Date addTime;
+#end
 
 }

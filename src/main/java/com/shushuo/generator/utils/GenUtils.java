@@ -13,6 +13,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
@@ -44,8 +45,8 @@ public class GenUtils {
 	/**
 	 * 生成代码
 	 */
-	public static void generatorCode(Map<String, String> table,
-			List<Map<String, String>> columns, ZipOutputStream zip, String domainName){
+	public static void generatorCode(String source, Map<String, String> table,
+			List<Map<String, String>> columns, String domainName){
 		//配置信息
 		Configuration config = getConfig();
 		boolean hasBigDecimal = false;
@@ -106,7 +107,7 @@ public class GenUtils {
 		mainPath = StringUtils.isBlank(mainPath) ? "com.shushuo" : mainPath;
 		
 		//封装模板数据
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>(16);
 		map.put("tableName", tableEntity.getTableName());
 		map.put("comments", tableEntity.getComments());
 		map.put("pk", tableEntity.getPk());
@@ -132,19 +133,41 @@ public class GenUtils {
 			StringWriter sw = new StringWriter();
 			Template tpl = Velocity.getTemplate(template, "UTF-8");
 			tpl.merge(context, sw);
-			
-			try {
-				//添加到zip
-				zip.putNextEntry(new ZipEntry(getFileName(template, tableEntity.getClassName(), config.getString("package"), config.getString("moduleName"), domainName)));
-				IOUtils.write(sw.toString(), zip, "UTF-8");
-				IOUtils.closeQuietly(sw);
-				zip.closeEntry();
-			} catch (IOException e) {
-				throw new RRException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
-			}
+
+			String fileName = getFileName(source, template, tableEntity.getClassName(), config.getString
+					("package"), config.getString("moduleName"), domainName);
+
+			GenUtils.createFile(fileName, sw);
+
 		}
 	}
-	
+
+	private static void createFile(String fileName, StringWriter sw) {
+		FileWriter fileWriter = null;
+		try {
+			File file = new File(fileName);
+			File parentFile = file.getParentFile();
+			if (!parentFile.exists()) {
+				parentFile.mkdirs();
+			}
+
+			fileWriter = new FileWriter(file);
+			fileWriter.write(sw.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RRException("渲染模板失败，文件名：" + fileName, e);
+		} finally {
+
+			try {
+				if (fileWriter != null) {
+					fileWriter.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
 	
 	/**
 	 * 列名转换成Java属性名
@@ -186,60 +209,80 @@ public class GenUtils {
 	}
 
 	/**
+	 * E:\law\com\shushuo\law\dao\mybatis\bo\app\AppBo.java
+	 * E:\law\law-dao\src\main\java\com\shushuo\law\dao\mybatis\bo\app\AppBo.java
+	 *
 	 * 获取文件名
 	 */
-	public static String getFileName(String template, String className, String packageName, String moduleName, String domainName ) {
-		String packagePath = "generator" + File.separator;
+	public static String getFileName(String source, String template, String className, String packageName, String
+			moduleName, String domainName ) {
+		String src = "src" + File.separator + "main" + File.separator + "java" + File.separator;
+
+		String daoPackagePath = source + File.separator + moduleName + "-dao" + File.separator + src;
 		if (StringUtils.isNotBlank(packageName)) {
-			packagePath += packageName.replace(".", File.separator) + File.separator + moduleName + File.separator;
+			daoPackagePath += packageName.replace(".", File.separator) + File.separator + moduleName + File.separator;
+		}
+
+		String xmlPackagePath = source + File.separator + moduleName + "-dao" + File.separator + "src" + File
+				.separator + "main" + File.separator + "resources" + File.separator + "mybatis" +  File.separator + "mapper" + File.separator;
+
+
+		String servicePackagePath = source + File.separator + moduleName + "-service" + File.separator + src;
+		if (StringUtils.isNotBlank(packageName)) {
+			servicePackagePath += packageName.replace(".", File.separator) + File.separator + moduleName + File.separator;
+		}
+
+		String serverPackagePath = source + File.separator + moduleName + "-server" + File.separator + src;
+		if (StringUtils.isNotBlank(packageName)) {
+			serverPackagePath += packageName.replace(".", File.separator) + File.separator + moduleName + File.separator;
 		}
 
 		if (template.contains("SsBo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "Bo.java";
+			return daoPackagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "Bo.java";
 		}
 
 		if (template.contains("SsController.java.vm" )) {
-			return packagePath + "web" + File.separator + "controller" + File.separator + domainName + File.separator + className + "Controller" + ".java";
+			return serverPackagePath + "web" + File.separator + "controller" + File.separator + domainName + File.separator + className + "Controller" + ".java";
 		}
 
 		if (template.contains("SsDeleteBo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "DeleteBo.java";
+			return daoPackagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "DeleteBo.java";
 		}
 
 		if (template.contains("SsMapper.java.vm" )) {
-			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "mapper" + File.separator + domainName + File.separator + className + "Mapper.java";
+			return daoPackagePath + "dao" + File.separator + "mybatis" + File.separator + "mapper" + File.separator + domainName + File.separator + className + "Mapper.java";
 		}
 
 		if (template.contains("SsMapper.xml.vm" )) {
-			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "mapper" + File.separator + domainName + File.separator + className + "Mapper.xml";
+			return xmlPackagePath + className + "Mapper.xml";
 		}
 
 		if (template.contains("SsQueryBo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "QueryBo.java";
+			return daoPackagePath + "dao" + File.separator + "mybatis" + File.separator + "bo" + File.separator + domainName + File.separator + className + "QueryBo.java";
 		}
 
 		if (template.contains("SsQueryRequest.java.vm" )) {
-			return packagePath + "web" + File.separator + "request" + File.separator + domainName + File.separator + className + "QueryRequest.java";
+			return serverPackagePath + "web" + File.separator + "request" + File.separator + domainName + File.separator + className + "QueryRequest.java";
 		}
 
 		if (template.contains("SsQueryVo.java.vm" )) {
-			return packagePath + "dao" + File.separator + "mybatis" + File.separator + "vo" + File.separator + domainName + File.separator + className + "QueryVo.java";
+			return daoPackagePath + "dao" + File.separator + "mybatis" + File.separator + "vo" + File.separator + domainName + File.separator + className + "QueryVo.java";
 		}
 
 		if (template.contains("SsRepository.java.vm" )) {
-			return packagePath + "dao" + File.separator + "jpa" + File.separator + "repository"  + File.separator + domainName + File.separator + className + "Repository.java";
+			return daoPackagePath + "dao" + File.separator + "jpa" + File.separator + "repository"  + File.separator + domainName + File.separator + className + "Repository.java";
 		}
 
 		if (template.contains("SsRequest.java.vm" )) {
-			return packagePath + "web" + File.separator + "request" + File.separator + domainName + File.separator + className + "Request.java";
+			return serverPackagePath + "web" + File.separator + "request" + File.separator + domainName + File.separator + className + "Request.java";
 		}
 
 		if (template.contains("SsService.java.vm" )) {
-			return packagePath + "service" + File.separator + domainName + File.separator + className + "Service.java";
+			return servicePackagePath + "service" + File.separator + domainName + File.separator + className + "Service.java";
 		}
 
 		if (template.contains("SsServiceImpl.java.vm" )) {
-			return packagePath + "service" + File.separator + domainName + File.separator + "impl" + File.separator + className + "ServiceImpl" + ".java";
+			return servicePackagePath + "service" + File.separator + domainName + File.separator + "impl" + File.separator + className + "ServiceImpl" + ".java";
 		}
 
 		return null;

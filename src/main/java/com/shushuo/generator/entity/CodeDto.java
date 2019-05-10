@@ -16,6 +16,10 @@ import java.util.List;
 @NoArgsConstructor
 @ApiModel
 public class CodeDto {
+
+    @ApiModelProperty(value = "项目路径", example = "D://ceres")
+    private String source;
+
     @ApiModelProperty(value = "库名", example = "ceres")
     private String tableSchema;
 

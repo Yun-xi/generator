@@ -15,9 +15,13 @@
         FROM ${tableName}
         <where>
             app_id = #{appId}
-            <if test="id != null and id != ''">
-                AND id = #{id}
+#foreach($column in $columns)
+#if($column.attrname != 'appId')
+            <if test="${column.attrname} != null and ${column.attrname} != ''">
+                AND ${column.columnName} = #{${column.attrname}}
             </if>
+#end
+#end
         </where>
         ORDER BY id DESC
     </select>
