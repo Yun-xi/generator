@@ -43,6 +43,7 @@ public class ${className}Controller extends BaseController {
             @ModelAttribute ${className}QueryRequest ${classname}QueryRequest) throws SsException {
 
         ${className}QueryBo ${classname}QueryBo = ${classname}QueryRequest.toBean(${className}QueryBo.class);
+        ${classname}QueryBo.setAppId(getAppId(token));
 
         PageBean<${className}QueryVo> ${classname}QueryVoPageBean = ${classname}Service.list(
                 PageQuery.<${className}QueryBo>builder()
